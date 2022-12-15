@@ -1,0 +1,223 @@
+:root {
+  --transition-duration: .25s;
+  --transition-timing-function: ease-out;
+}
+
+form,
+.form {
+  --padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  padding: var(--gap);
+}
+
+fieldset {
+  /* ignore this container */
+  border: none;
+  display: contents;
+}
+
+legend {
+  display: none;
+  width: 100%;
+}
+#newMessage legend {
+  display: block;
+}
+
+input,
+textarea {
+  color: var(--color);
+  font-size: 1.6rem;
+}
+
+button,
+label {
+  color: var(--color);
+  cursor: pointer;
+  display: block;
+  font-size: 1.6rem;
+  margin-bottom: 0;
+  padding: var(--padding);
+  text-indent: 0;
+  transition: background-color var(--transition-duration);
+}
+
+input[type="password"],
+input[type="text"],
+input[type="url"],
+textarea {
+  background: var(--bgcolor-textinput);
+  border: .2rem solid #b7b7b7;
+  border-radius: .2rem;
+  display: block;
+  margin: 0 0 1.2rem 0;
+  padding: var(--padding);
+}
+input[type="password"]:focus,
+input[type="text"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+  border-color: var(--focus-border-color);
+  outline-offset: var(--focus-outline-offset);
+  outline: var(--focus-outline);
+}
+input:invalid {
+  outline: 2px solid var(--bgcolor-danger);
+  outline-offset: var(--focus-outline-offset);
+}
+textarea {
+  /* max-height: 64vh; */
+  min-height: 20px;
+  resize: none;
+  transition: min-height var(--transition-duration) var(--transition-timing-function),
+              height var(--transition-duration) var(--transition-timing-function);
+}
+textarea:focus {
+  min-height: 3.5rem;
+}
+#newMessage textarea {
+  min-height: 10rem;
+}
+#newMessage textarea:focus {
+  min-height: 18rem;
+}
+@media (orientation: portrait) {
+  #newMessage textarea {
+    min-height: 8rem;
+  }
+  #newMessage textarea:focus {
+    min-height: 15rem;
+  }
+}
+
+.buttons {
+  align-items: center;
+  display: flex;
+  flex-basis: 100%;
+  justify-content: flex-end;
+  gap: var(--gap);
+  margin-top: 2rem;
+  min-height: 3.2rem;
+}
+.form-inline .buttons {
+  flex-basis: fit-content;
+  margin-top: 0;
+}
+
+button {
+  --bg-color: var(--bgcolor-accent);
+  --border-color: var(--bgcolor-accent);
+  background-color: var(--bg-color);
+  border: 0.2rem solid var(--border-color);
+  border-radius: .2rem;
+  cursor: pointer;
+  outline-offset: 1px;
+  word-break: normal;
+}
+
+button:focus {
+}
+
+.btn-inline {
+  --border-color: transparent;
+  align-items: center;
+  background: transparent;
+  color: var(--color);
+  display: inline-flex;
+  gap: .5ch;
+  line-height: 1;
+  padding: .6rem;
+}
+.btn-inline img {
+  max-height: 18px;
+  max-width: 18px;
+}
+.btn-inline img[alt] {
+  color: #7f7f7f;
+  line-height: 1px;
+}
+.btn-inline img[alt]::before {
+  font-size: 3.4rem;
+}
+
+.btn-danger {
+  background: var(--bgcolor-danger);
+}
+
+button:disabled {
+  --bg-color: var(--bgcolor-inactive);
+  --border-color: var(--bgcolor-inactive);
+  cursor: default;
+}
+
+.form-status {
+  flex-basis: 100%;
+  flex-grow: 1;
+  padding: var(--padding);
+}
+
+.form-inline {
+  --padding: 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  padding: 0;
+}
+.form-inline * + * {
+  margin-left: var(--gap);
+}
+.cards .form-inline button,
+.cards .form-inline input[type="text"],
+.cards .form-inline textarea {
+  margin: .4rem 0;
+}
+
+.form-inline input[type="text"],
+.form-inline textarea {
+  flex-basis: 50%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 100px;
+  margin-bottom: 0;
+}
+
+.form-inline button {
+  flex-grow: 0;
+}
+
+button#publish {
+  align-self: end;
+  order: 2;
+}
+button[name="back"] {
+  display: none;
+}
+#newMessage button[name="back"] {
+  align-self: end;
+  display: inherit;
+}
+
+#sendstatus {
+  margin-left: 0;
+  order: 1;
+}
+
+.focus-active {
+
+}
+
+.shrink-out {
+  animation-duration: var(--transition-duration);
+  animation-name: lineInserted;
+  transition: max-height calc(.5 * var(--transition-duration)) var(--transition-timing-function);
+}
+@keyframes lineInserted {
+  from {
+    max-height: 50px;
+  }
+  to {
+    max-height: 0px;
+  }
+}

@@ -1,0 +1,158 @@
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/Layout_cookbook/Media_objects */
+.mbox {
+  --profileimg-size: 4rem;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: 0 var(--gap);
+}
+@media (orientation: portrait) {
+  .mbox {
+    padding: 0 calc(.5 * var(--gap));
+  }
+}
+.mbox:last-child {
+  margin-bottom: 0;
+}
+.mbox .mbox {
+  padding: 0;
+}
+
+.mbox-img {
+  align-self: start;
+  background-color: var(--bgcolor-textinput);
+  border-radius: var(--profileimg-size);
+  border: 1px solid transparent;
+  flex-basis: var(--profileimg-size);
+  height: var(--profileimg-size);
+  margin-right: 1rem;
+  /* padding-top: .5ch; */
+  max-height: var(--profileimg-size);
+  max-width: var(--profileimg-size);
+  outline: .5rem solid var(--bgcolor);
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.mbox-img canvas,
+.mbox-img img {
+  display: block;
+}
+
+.mbox-updated-contact .mbox-img,
+.mbox-recommend-server .mbox-img {
+  --profileimg-size: 2rem;
+  margin-left: 2rem;
+}
+
+.mbox-body {
+  flex-basis: calc(100% - 64px - 1rem);
+  flex-grow: 0;
+  flex-shrink: 1;
+  word-break: break-word;
+}
+
+.mbox-header {
+  flex-basis: calc(100% - 64px - 1rem);
+  flex-grow: 0;
+  flex-shrink: 1;
+  margin-top: 0;
+}
+.mbox-header time,
+.mbox-username {
+  color: var(--color-accent);
+}
+
+.mbox-kind0-name {
+  color: var(--color);
+}
+
+.mbox-updated-contact .mbox-body,
+.mbox-recommend-server .mbox-body {
+  display: block;
+  font-size: var(--font-small);
+  overflow: scroll;
+}
+
+.mbox-updated-contact .mbox-header,
+.mbox-recommend-server .mbox-header {
+  display: inline;
+}
+
+.mbox-updated-contact {
+  padding: 0 0 1rem 0;
+  margin: 0;
+}
+
+.mbox {
+  overflow: hidden;
+}
+.mbox .mbox {
+  overflow: visible;
+  position: relative;
+}
+.mobx-replies {
+  flex-grow: 1;
+  position: relative;
+}
+.mbox .mbox::before,
+.mobx-replies::before {
+  background-color: var(--bgcolor-inactive);
+  border: none;
+  content: "";
+  display: block;
+  height: 100vh;
+  left: calc(.5 * var(--profileimg-size));
+  margin-left: -.2rem;
+  position: absolute;
+  top: -100vh;
+  width: .4rem;
+}
+
+[data-append]::after {
+  color: var(--color-accent);
+  content: "…";
+}
+
+.preview-loaded a {
+  background-color: var(--bgcolor-textinput);
+  border: 1px solid var(--bgcolor-inactive);
+  color: var(--color);
+  display: flex;
+  flex-direction: column;
+  margin: var(--gap) 0 0 0;
+  max-width: 48rem;
+  padding: 1.5rem 1.8rem;
+  text-decoration: none;
+}
+.preview-loaded a:visited {
+  color: inherit;
+}
+
+.preview-title {
+  font-size: inherit;
+  margin: 0;
+}
+
+.preview-descr {
+  font-size: var(--font-small);
+}
+
+.preview-image {
+  background-color: rgba(72, 63, 63, 0.07);
+  margin-bottom: var(--gap);
+  max-height: 30vh;
+  object-fit: contain;
+}
+
+.preview-image-only {
+  background-color: var(--bgcolor-textinput);
+  border: 1px solid var(--bgcolor-inactive);
+  margin: var(--gap) 0 0 0;
+  max-width: 48rem;
+  padding: 1.5rem 1.8rem;
+  width: 100%;
+}

@@ -1,0 +1,122 @@
+@import "tabs.css";
+@import "cards.css";
+@import "form.css";
+@import "write.css";
+
+:root {
+  /* 5px auto Highlight */
+  --focus-border-color: rgb(0, 122, 255);
+  --focus-border-radius: 2px;
+  --focus-outline-color: rgb(192, 227, 252);
+  --focus-outline-offset: 2px;
+  --focus-outline-style: solid;
+  --focus-outline-width: 2px;
+  --focus-outline: var(--focus-outline-width) var(--focus-outline-style) var(--focus-outline-color);
+  --font-small: 1.2rem;
+  --gap: 2.4rem;
+}
+
+::selection {
+  background: #ff79f9;
+  color: #fff;
+}
+
+:where([hidden]) {
+  display: none !important;
+}
+
+@media (prefers-color-scheme: light) {
+  html {
+    --bgcolor: #fdfefa;
+    --bgcolor-accent: #7badfc;
+    --bgcolor-inactive: #bababa;
+    --bgcolor-textinput: #fff;
+    --color: rgb(68 68 68);
+    --color-accent: rgb(16, 93, 176);
+    --bgcolor-danger: rgb(255, 80, 80);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    --bgcolor: #191919;
+    --bgcolor-accent: rgb(16, 93, 176);
+    --bgcolor-inactive: #434343;
+    --bgcolor-textinput: #0e0e0e;
+    --color: #e3e3e3;
+    --color-accent: #7b7b7b;
+    --bgcolor-danger: rgb(169, 0, 0);
+  }
+
+  img {
+    opacity: .75;
+    transition: opacity .5s ease-in-out;
+  }
+  img:hover {
+    opacity: 1;
+  }
+}
+
+html {
+  font-size: 62.5%;
+  line-height: 1;
+}
+
+body {
+  background-color: var(--bgcolor);
+  color: var(--color);
+  font-size: 1.6rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: monospace;
+}
+
+small,
+time {
+  font-size: var(--font-small);
+}
+
+canvas,
+img {
+  max-width: 100%;
+}
+
+.text {
+  margin: var(--gap);
+}
+
+.danger {
+  background-color: var(--bgcolor-danger);
+}
+
+a {
+  color: var(--color-accent);
+}
+
+a:focus {
+  border-radius: var(--focus-border-radius);
+  outline: var(--focus-outline);
+  outline-offset: 0;
+}
+
+a:visited {
+  color: darkmagenta;
+}
+
+img[alt] {
+  font-size: .9rem;
+  text-align: center;
+  word-break: break-all;
+}
+
+pre {
+  margin: 0;
+  padding: .5rem 0;
+}
