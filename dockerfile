@@ -12,4 +12,4 @@ RUN npm install --omit=dev
 
 #USER node
 CMD ["dumb-init", "node", "host/host.js"]
-EXPOSE 4250
+EXPOSE 4360
