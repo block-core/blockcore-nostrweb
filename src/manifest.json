@@ -4,9 +4,9 @@
   "categories": ["news", "social"],
   "description": "a nostr news client to connect with the world.",
   "display": "fullscreen",
-  "name": "nostr",
+  "name": "nostrweb",
   "short_name": "nostr",
-  "start_url": "https://nostr.ch/",
+  "start_url": "https://nostr.blockcore.net/",
   "icons": [{
     "src": "assets/nostr-favicon.png",
     "sizes": "256x256",
