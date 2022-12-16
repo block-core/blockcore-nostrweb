@@ -464,11 +464,10 @@ function getMetadata(evt, relay) {
   const host = getHost(relay);
   const user = userList.find(user => user.pubkey === evt.pubkey);
 
-  if (user != null)
-  {
-    console.log('FOUND!!!', user);
-  }
-
+  // if (user != null)
+  // {
+  //   console.log('FOUND!!!', user);
+  // }
   // console.log('GET META DATA!!', user);
 
   const userImg = user?.picture;
