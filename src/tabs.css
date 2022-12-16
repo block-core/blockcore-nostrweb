@@ -56,7 +56,6 @@ input[type="radio"]:checked + label {
   .tabbed {
     align-items: start;
     display: flex;
-    flex-direction: row-reverse;
     flex-wrap: wrap;
     justify-content: start;
   }

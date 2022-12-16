@@ -3,12 +3,14 @@ import {elem, parseTextContent} from './domutil.js';
 import {dateTime, formatTime} from './timeutil.js';
 // curl -H 'accept: application/nostr+json' https://relay.nostr.ch/
 const pool = relayPool();
+pool.addRelay('wss://nostr-pub.wellorder.net', {read: true, write: true});
 pool.addRelay('wss://relay.nostr.info', {read: true, write: true});
 pool.addRelay('wss://relay.damus.io', {read: true, write: true});
 pool.addRelay('wss://nostr.x1ddos.ch', {read: true, write: true});
 pool.addRelay('wss://relay.nostr.ch', {read: true, write: true});
+pool.addRelay('wss://nostr.bitcoiner.social/', {read: true, write: true});
+pool.addRelay('wss://relay.minds.com/nostr/v1/ws', {read: false, write: true});
 // pool.addRelay('wss://nostr.openchain.fr', {read: true, write: true});
-// pool.addRelay('wss://nostr.bitcoiner.social/', {read: true, write: true});
 // read only
 // pool.addRelay('wss://nostr.rocks', {read: true, write: false});
 
@@ -461,6 +463,14 @@ const elemCanvas = (text) => {
 function getMetadata(evt, relay) {
   const host = getHost(relay);
   const user = userList.find(user => user.pubkey === evt.pubkey);
+
+  if (user != null)
+  {
+    console.log('FOUND!!!', user);
+  }
+
+  // console.log('GET META DATA!!', user);
+
   const userImg = user?.picture;
   const name = user?.metadata[relay]?.name;
   const userName = name || evt.pubkey.slice(0, 8);
@@ -564,9 +574,10 @@ async function upvote(eventId, relay) {
     tags: [['e', eventId, relay, 'reply']],
     created_at: Math.floor(Date.now() * 0.001),
   };
-  const sig = await signEvent(newReaction, privatekey).catch(console.error);
-  if (sig) {
-    const ev = await pool.publish({...newReaction, sig}, (status, url) => {
+  // const signedEvent = await globalThis.nostr.signEvent(newReaction);
+  const signedEvent = await signEvent(newReaction, privatekey).catch(console.error);
+  if (signedEvent) {
+    const ev = await pool.publish(signedEvent, (status, url) => {
       if (status === 0) {
         console.info(`publish request sent to ${url}`);
       }
@@ -584,10 +595,10 @@ const publish = document.querySelector('#publish');
 writeForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   // const pubkey = localStorage.getItem('pub_key');
-  const privatekey = localStorage.getItem('private_key');
-  if (!pubkey || !privatekey) {
-    return onSendError(new Error('no pubkey/privatekey'));
-  }
+  // const privatekey = localStorage.getItem('private_key');
+  // if (!pubkey || !privatekey) {
+  //   return onSendError(new Error('no pubkey/privatekey'));
+  // }
   const content = writeInput.value.trimRight();
   if (!content) {
     return onSendError(new Error('message is empty'));
@@ -596,14 +607,16 @@ writeForm.addEventListener('submit', async (e) => {
   const tags = replyTo ? [['e', replyTo, eventRelayMap[replyTo][0]]] : [];
   const newEvent = {
     kind: 1,
-    pubkey,
+    // pubkey,
     content,
     tags,
     created_at: Math.floor(Date.now() * 0.001),
   };
-  const sig = await signEvent(newEvent, privatekey).catch(onSendError);
-  if (sig) {
-    const ev = await pool.publish({...newEvent, sig}, (status, url) => {
+  
+  const signedEvent = await globalThis.nostr.signEvent(newEvent);
+  // const sig = await signEvent(newEvent, privatekey).catch(onSendError);
+  if (signedEvent) {
+    const ev = await pool.publish(signedEvent, (status, url) => {
       if (status === 0) {
         console.info(`publish request sent to ${url}`);
       }
@@ -645,34 +658,49 @@ const settingsForm = document.querySelector('form[name="settings"]');
 const privateKeyInput = settingsForm.querySelector('#privatekey');
 const pubKeyInput = settingsForm.querySelector('#pubkey');
 const statusMessage = settingsForm.querySelector('#keystatus');
+const connectBtn = settingsForm.querySelector('button[name="connect"]');
 const generateBtn = settingsForm.querySelector('button[name="generate"]');
 const importBtn = settingsForm.querySelector('button[name="import"]');
 const privateTgl = settingsForm.querySelector('button[name="privatekey-toggle"]');
 
-generateBtn.addEventListener('click', () => {
-  const privatekey = generatePrivateKey();
-  const pubkey = getPublicKey(privatekey);
-  if (validKeys(privatekey, pubkey)) {
-    privateKeyInput.value = privatekey;
+connectBtn.addEventListener('click', async () => {
+  console.log('globalThis.nostr', globalThis.nostr);
+  const pubkey = await globalThis.nostr.getPublicKey();
+  console.log('publicKey:', pubkey);
+  // const privatekey = generatePrivateKey();
+  // const pubkey = getPublicKey(privatekey);
+  // if (validKeys(privatekey, pubkey)) {
+    // privateKeyInput.value = privatekey;
     pubKeyInput.value = pubkey;
-    statusMessage.textContent = 'private-key created!';
+    // statusMessage.textContent = 'private-key created!';
     statusMessage.hidden = false;
-  }
+  // }
+});
+
+generateBtn.addEventListener('click', () => {
+  // const privatekey = generatePrivateKey();
+  // const pubkey = getPublicKey(privatekey);
+  // if (validKeys(privatekey, pubkey)) {
+  //   privateKeyInput.value = privatekey;
+  //   pubKeyInput.value = pubkey;
+  //   statusMessage.textContent = 'private-key created!';
+  //   statusMessage.hidden = false;
+  // }
 });
 
 importBtn.addEventListener('click', () => {
-  const privatekey = privateKeyInput.value;
+  // const privatekey = privateKeyInput.value;
   const pubkeyInput = pubKeyInput.value;
-  if (validKeys(privatekey, pubkeyInput)) {
-    localStorage.setItem('private_key', privatekey);
+  // if (validKeys(privatekey, pubkeyInput)) {
+    // localStorage.setItem('private_key', privatekey);
     localStorage.setItem('pub_key', pubkeyInput);
-    statusMessage.textContent = 'stored private and public key locally!';
+    statusMessage.textContent = 'stored public key locally!';
     statusMessage.hidden = false;
     pubkey = pubkeyInput;
-  }
+  // }
 });
 
-settingsForm.addEventListener('input', () => validKeys(privateKeyInput.value, pubKeyInput.value));
+//settingsForm.addEventListener('input', () => validKeys(privateKeyInput.value, pubKeyInput.value));
 privateKeyInput.addEventListener('paste', (event) => {
   if (pubKeyInput.value || !event.clipboardData) {
     return;
@@ -687,23 +715,23 @@ privateKeyInput.addEventListener('paste', (event) => {
   }
 });
 
-function validKeys(privatekey, pubkey) {
-  try {
-    if (getPublicKey(privatekey) === pubkey) {
-      statusMessage.hidden = true;
-      statusMessage.textContent = 'public-key corresponds to private-key';
-      importBtn.removeAttribute('disabled');
-      return true;
-    } else {
-      statusMessage.textContent = 'private-key does not correspond to public-key!'
-    }
-  } catch (e) {
-    statusMessage.textContent = `not a valid private-key: ${e.message || e}`;
-  }
-  statusMessage.hidden = false;
-  importBtn.setAttribute('disabled', true);
-  return false;
-}
+// function validKeys(privatekey, pubkey) {
+//   try {
+//     if (getPublicKey(privatekey) === pubkey) {
+//       statusMessage.hidden = true;
+//       statusMessage.textContent = 'public-key corresponds to private-key';
+//       importBtn.removeAttribute('disabled');
+//       return true;
+//     } else {
+//       statusMessage.textContent = 'private-key does not correspond to public-key!'
+//     }
+//   } catch (e) {
+//     statusMessage.textContent = `not a valid private-key: ${e.message || e}`;
+//   }
+//   statusMessage.hidden = false;
+//   importBtn.setAttribute('disabled', true);
+//   return false;
+// }
 
 privateTgl.addEventListener('click', () => {
   privateKeyInput.type = privateKeyInput.type === 'text' ? 'password' : 'text';
@@ -747,18 +775,19 @@ profileForm.addEventListener('input', (e) => {
 profileForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = new FormData(profileForm);
-  const privatekey = localStorage.getItem('private_key');
+  // const privatekey = localStorage.getItem('private_key');
 
   const newProfile = {
     kind: 0,
-    pubkey,
+    // pubkey,
     content: JSON.stringify(Object.fromEntries(form)),
     created_at: Math.floor(Date.now() * 0.001),
     tags: [],
   };
-  const sig = await signEvent(newProfile, privatekey).catch(console.error);
-  if (sig) {
-    const ev = await pool.publish({...newProfile, sig}, (status, url) => {
+  const signedEvent = await globalThis.nostr.signEvent(newProfile);
+  // const sig = await signEvent(newProfile, privatekey).catch(console.error);
+  if (signedEvent) {
+    const ev = await pool.publish(signedEvent, (status, url) => {
       if (status === 0) {
         console.info(`publish request sent to ${url}`);
       }
